@@ -125,8 +125,8 @@ class TokenDataFile : KoinComponent {
         return null
     }
 
-    private fun removeOldTokens(list: List<DeviceToken>): List<DeviceToken> {
-        return list.filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
+    private fun removeOldTokens(list: List<DeviceToken?>): List<DeviceToken> {
+        return list.filterNotNull().filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
     }
 
     private fun myDevice(): String {
