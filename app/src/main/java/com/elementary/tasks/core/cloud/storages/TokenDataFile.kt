@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud.storages
 
 import android.os.Build
 import androidx.annotation.Keep
+import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.daysAfter
 import com.elementary.tasks.core.utils.hoursAfter
@@ -10,6 +11,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.koin.core.KoinComponent
 import timber.log.Timber
+import java.io.InputStream
 
 
 class TokenDataFile : KoinComponent {
@@ -24,10 +26,10 @@ class TokenDataFile : KoinComponent {
 
     fun isEmpty(): Boolean = devices.isEmpty()
 
-    fun parse(json: String?) {
-        Timber.d("parse: $json")
+    fun parse(stream: InputStream) {
+        Timber.d("parse: $stream")
         try {
-            val tokens = Gson().fromJson(json, Tokens::class.java)
+            val tokens = MemoryUtil.fromStreamNoDecrypt(stream, Tokens::class.java)
             if (tokens != null) {
                 val oldTokens = this.devices.toList()
                 val newTokens = mergeTokens(tokens.tokens, oldTokens)
